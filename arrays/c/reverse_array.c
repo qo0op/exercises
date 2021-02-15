@@ -6,7 +6,7 @@
 /* Forward declaration */
 static void printArray_testArrayArg(int array[], int size);
 static void printArray(int *array, int size);
-
+static void reverseArray(int *array, int size);
 
 static void printArray_testArrayArg(int array[], int size)
 {
@@ -24,6 +24,18 @@ static void printArray(int *array, int size)
   printf("%d}\n", *array);
 }
 
+static void reverseArray(int *array, int size)
+{
+  for(int i = 0; i < size / 2; i++)
+  {
+    int tmp;
+
+    tmp = array[i];
+    array[i] = array[size - 1 - i];
+    array[size - 1 - i] = tmp;
+  }
+}
+
 int main(int argc, char** argv)
 {
   int array[] = {1,2,3,4,5};
@@ -33,14 +45,7 @@ int main(int argc, char** argv)
   printArray(array, ARR_SIZE(array));
   printArray_testArrayArg(array, ARR_SIZE(array));
 
-  for(int i = 0; i < ARR_SIZE(array) / 2; i++)
-  {
-    int tmp;
-
-    tmp = array[i];
-    array[i] = array[ARR_SIZE(array) - 1 - i];
-    array[ARR_SIZE(array) - 1 - i] = tmp;
-  }
+  reverseArray(array, ARR_SIZE(array));
 
   printArray(array, ARR_SIZE(array));
 
