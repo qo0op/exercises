@@ -4,11 +4,15 @@
 #include <arpa/inet.h> // inet_addr
 #include <unistd.h> // write
 
+#define PORT 8888
+#define MAX_CONNECTIONS 3
+#define MSG_SIZE 2000
+
 int main(int argc, char *argv[])
 {
 	int socket_desc, client_sock, c, read_size;
 	struct sockaddr_in server, client;
-	char client_message[2000];
+	char client_message[MSG_SIZE];
 
 	/* Create socekt */
 	socket_desc = socket(AF_INET, SOCK_STREAM, 0);
@@ -21,7 +25,7 @@ int main(int argc, char *argv[])
 	/* Define socaddr_in structure */
 	server.sin_family = AF_INET;
 	server.sin_addr.s_addr = INADDR_ANY;
-	server.sin_port = htons(8888);
+	server.sin_port = htons(PORT);
 
 	/* Bind the socket */
 	if(bind(socket_desc, (struct sockaddr *)&server, sizeof(server)) < 0)
@@ -32,7 +36,7 @@ int main(int argc, char *argv[])
 	puts("Socket binding successful");
 
 	/* Listen on socket for incomming traffc */
-	listen(socket_desc, 3);
+	listen(socket_desc, MAX_CONNECTIONS);
 
 	/* Wait for incomming connections*/
 	puts("Waiting for connections ...");
@@ -48,11 +52,11 @@ int main(int argc, char *argv[])
 	puts("Connection accepted");
 
 	/* Wait for client's message */
-	while((read_size = recv(client_sock, client_message, 2000, 0)) > 0)
+	while((read_size = recv(client_sock, client_message, MSG_SIZE, 0)) > 0)
 	{
 		/* Echo => send the message back to client */
 		write(client_sock, client_message, strlen(client_message));
-		puts("Message echoed");
+		printf("Message \"%s\" echoed\n", client_message);
 	}
 
 	if(read_size == 0)
